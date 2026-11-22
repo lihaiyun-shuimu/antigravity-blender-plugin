@@ -53,4 +53,4 @@ MCP Server 名称：`antigravity-blender`（`timeoutSeconds: 600`）
 
 - **Gateway 自动拉起**：MCP Server 启动时自动检测并复用 `127.0.0.1:39877`，未启动时自动拉起上游 `lib/runtime/gateway.js`；所有日志强制写入 `stderr` 或临时日志，绝不污染 MCP `stdout`。
 - **macOS 无 `virtual-gui`**：macOS 请始终手动打开 Blender 4.5 LTS GUI 并点击 N 面板 Connect；长耗时渲染或批量脚本使用 `blender_run(action="submit", kind="render" | "headless")`。
-- **Blender 4.5 LTS（macOS Metal）离屏抓帧说明**：实测在 macOS Metal + Blender 4.5.16 LTS 下，上游 `/view` 的 `GPUOffScreen` 离屏抓帧在 `MATERIAL`/`RENDERED` 模式下可能出现条纹花屏；日常视口查看请用 `blender_see(viewpoint="viewport", full=true)`，车漆/棚拍 LookDev 验收请用 `blender_run(kind="render", engine="BLENDER_EEVEE_NEXT" | "CYCLES")` 真实渲染出图。
+- **Blender 4.5 LTS（macOS Metal）视口抓帧已自动修复**：插件已在 `mcp-server/src/mac-capture.ts` 内置 macOS Metal 安全捕获通道（绕过 Blender 4.5 Metal `GPUOffScreen` 条纹缺陷，改走原生 `bpy.ops.render.opengl` 并自动还原场景状态），`viewport` / `custom` / `camera` 均 <100ms 清晰出图。

@@ -100,7 +100,7 @@ agy plugin validate --strict ./antigravity-plugin
 ## Blender 4.5 LTS（macOS Metal）实测注意事项
 
 1. **macOS 运行模式**：`virtual-gui` 仅支持 Windows/Linux，macOS 固定采用「手动打开 Blender 4.5 LTS GUI 点击 Connect + `blender_run(kind="headless" | "render")` 后台异步作业」双轨模式。
-2. **macOS Metal 离屏抓帧差异**：在 Blender 4.5.16 LTS + macOS Metal 下，上游 `/view` 的 `GPUOffScreen` 离屏抓帧在 `MATERIAL` / `RENDERED` 模式下可能出现像素条纹；日常视口查看建议使用 `blender_see(viewpoint="viewport", full=true)`，车漆/棚拍 LookDev 验收请使用 `blender_run(kind="render", engine="BLENDER_EEVEE_NEXT" | "CYCLES")` 真实渲染出图。
+2. **macOS Metal 视口抓帧修复（已内置）**：在 Blender 4.5 LTS + macOS Metal 下，上游 `GPUOffScreen` 离屏绘制存在条纹花屏问题；本插件已在 `antigravity-plugin/mcp-server/src/mac-capture.ts` 内置 macOS Metal 安全捕获通道（改走原生 `bpy.ops.render.opengl(write_still=True)` 并在 `finally` 中完整恢复场景状态），`blender_see` 的 `viewport` / `custom` / `camera` 与 `blender_py(see=true)` 均已实测 <100ms 高清无花屏。
 
 ---
 

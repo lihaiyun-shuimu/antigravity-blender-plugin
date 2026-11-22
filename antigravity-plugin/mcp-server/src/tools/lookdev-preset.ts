@@ -31,7 +31,7 @@ function buildLookdevPython(
     `PRESET = ${JSON.stringify(preset)}`,
     `TARGETS = ${JSON.stringify(targets)}`,
     `MAT_NAME = ${JSON.stringify(materialName)}`,
-    `OVR = ${JSON.stringify(overrides)}`,
+    `OVR = json.loads(${JSON.stringify(JSON.stringify(overrides))})`,
     '',
     'def _set_input(node, names, val):',
     '    if isinstance(names, str):',
