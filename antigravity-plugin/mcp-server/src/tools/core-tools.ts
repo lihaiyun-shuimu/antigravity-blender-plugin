@@ -21,6 +21,7 @@ import {
   type McpContentItem,
   type McpToolResult,
 } from '../media.js'
+import { macSafeCapture, shouldUseSafeMacCapture } from '../mac-capture.js'
 
 const BACKEND_HINT =
   '请确认 Blender 4.5 LTS 正在运行且 DSH Blender Bridge v2.0+ 已在 N 面板点击 Connect（连接至 127.0.0.1:39877）。'
@@ -456,7 +457,13 @@ export function registerCoreTools(server: McpServer, client: GatewayClient): voi
       if (args.see !== false) {
         const size = Math.max(120, Math.min(1600, Number(args.max_size ?? 560)))
         try {
-          const frame = await client.fetchFrame(size)
+          const frame = shouldUseSafeMacCapture()
+            ? await macSafeCapture(client, ready.sessionId, {
+                mode: 'current',
+                width: size,
+                height: Math.round((size * 9) / 16),
+              })
+            : await client.fetchFrame(size)
           const dd = frameDedupe(`py-see:${size}`, frame.hash, Boolean(args.force))
           if (dd.dup) {
             content[0] = { type: 'text', text: `${content[0].type === 'text' ? content[0].text : ''}${dedupeNote(dd.repeats)}` }
@@ -547,7 +554,20 @@ export function registerCoreTools(server: McpServer, client: GatewayClient): voi
         for (let i = 0; i < total; i++) {
           const t0 = Date.now()
           try {
-            const fv = await client.fetchView(spec)
+            const fv = shouldUseSafeMacCapture()
+              ? await macSafeCapture(client, ready.sessionId, {
+                  mode: viewpoint === 'custom' ? 'viewport' : 'current',
+                  width: dims.width,
+                  height: dims.height,
+                  from: numTriple(args.from),
+                  lookAt: numTriple(args.look_at),
+                  lens: args.lens,
+                  ortho: args.ortho,
+                  orthoScale: args.ortho_scale,
+                  shading: args.shading,
+                  overlays: args.overlays,
+                })
+              : await client.fetchView(spec)
             shots.push({ ms: fv.ms, hash: fv.hash, png: fv.png })
           } catch {
             // Continue sequence capture
@@ -576,7 +596,13 @@ export function registerCoreTools(server: McpServer, client: GatewayClient): voi
         }
         const camName = args.camera === true ? '' : text(args.camera).trim()
         try {
-          const fv = await client.fetchView({ mode: 'camera', camera: camName, max_size: size })
+          const fv = shouldUseSafeMacCapture()
+            ? await macSafeCapture(client, ready.sessionId, {
+                mode: 'camera',
+                camera: camName,
+                maxSize: size,
+              })
+            : await client.fetchView({ mode: 'camera', camera: camName, max_size: size })
           const mt = asRecord(fv.meta)
           const dd = frameDedupe('see:camera', fv.hash, Boolean(args.force))
           const info = `SEE camera · ${text(mt.width || '?')}x${text(mt.height || '?')} · ${fv.ms}ms · hash ${fv.hash}${dd.dup ? dedupeNote(dd.repeats) : ''}`
@@ -630,7 +656,20 @@ export function registerCoreTools(server: McpServer, client: GatewayClient): voi
           : { mode: 'current', width: dims.width, height: dims.height }
 
       try {
-        const fv = await client.fetchView(spec)
+        const fv = shouldUseSafeMacCapture()
+          ? await macSafeCapture(client, ready.sessionId, {
+              mode: viewpoint === 'custom' ? 'viewport' : 'current',
+              width: dims.width,
+              height: dims.height,
+              from: numTriple(args.from),
+              lookAt: numTriple(args.look_at),
+              lens: args.lens,
+              ortho: args.ortho,
+              orthoScale: args.ortho_scale,
+              shading: args.shading,
+              overlays: args.overlays,
+            })
+          : await client.fetchView(spec)
         const key = viewpoint === 'custom' ? `see:custom:${JSON.stringify(spec)}` : `see:current:${dims.width}x${dims.height}`
         const dd = frameDedupe(key, fv.hash, Boolean(args.force))
         const mt = asRecord(fv.meta)
