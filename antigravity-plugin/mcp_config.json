@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "antigravity-blender": {
+      "command": "node",
+      "args": [
+        "${PLUGIN_ROOT}/mcp-server/dist/index.js"
+      ],
+      "timeoutSeconds": 600,
+      "tools": {
+        "blender_session": {
+          "eager": true
+        },
+        "blender_op": {
+          "eager": true
+        },
+        "blender_see": {
+          "eager": true
+        },
+        "blender_py": {
+          "eager": true
+        }
+      }
+    }
+  }
+}

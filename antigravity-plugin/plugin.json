@@ -1,0 +1,20 @@
+{
+  "name": "antigravity-blender",
+  "displayName": "Antigravity Blender",
+  "version": "1.0.0",
+  "description": "Google Antigravity native MCP plugin for Blender 4.5 LTS (ported from sixtysevenlf/dsh-blender-plugin): 6 core modeling tools (session/op/py/see/run/inspect), runtime bpy API introspection, sports-car Clearcoat & AgX studio LookDev presets, read-only scene resources, and modeling/sports-car skills.",
+  "author": {
+    "name": "lihaiyun-shuimu",
+    "url": "https://github.com/lihaiyun-shuimu"
+  },
+  "homepage": "https://github.com/lihaiyun-shuimu/antigravity-blender-plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lihaiyun-shuimu/antigravity-blender-plugin.git"
+  },
+  "suggestedPrompts": [
+    "检查 Blender 4.5 LTS 与 Antigravity Blender Gateway 连接状态并查看当前场景概览",
+    "按跑车全流程 SOP 从三视图测量开始搭建一辆现代超跑并配置 AgX 棚拍车漆",
+    "在当前 Blender 场景中做一次拓扑与装配审计，修复穿模与浮空件后回传四视图"
+  ]
+}
